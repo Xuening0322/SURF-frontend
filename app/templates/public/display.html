@@ -1,0 +1,50 @@
+{% extends "public/templates/public_template.html" %}
+
+{% block title %}Display{% endblock %}
+
+
+{% block main %}
+<meta id="wav-path" data-name="wav-path" data-other="{{ url_for('static', filename='uploads/'+timestamp+'.wav') }}">
+
+
+<div class="container">
+  <div class="row">
+    <div class="col"> 
+      <h1>Display</h1>
+      <hr>
+      <p><em>{{timestamp}}.wav</em></p>
+    </div>
+  </div>
+</div>
+<br></br>
+
+
+<div class="container">
+  <div id="waveform">
+    <div class="progress progress-striped active" id="progress-bar">
+      <div class="progress-bar progress-bar-info"></div>
+    </div>
+    <!-- Waveform child will be appended here -->
+  </div>
+  <div id="wave-timeline"></div>
+  <!-- Controls -->
+  <div class="controls">
+    <button class="btn btn-primary" data-action="play" onclick="wavesurfer.playPause()">
+      <i class="glyphicon glyphicon-play"></i>Play/<i class="glyphicon glyphicon-pause"></i>Pause
+    </button>
+  </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block script %}
+
+<!-- wavesurfer.timeline.js -->
+<script src="{{ url_for('static', filename='js/wavesurfer.js') }}">  </script>
+<script src="{{ url_for('static', filename='js/wavesurfer.timeline.min.js') }}">  </script>
+<script src="{{ url_for('static', filename='js/display-app.js') }}">  </script>
+
+
+{% endblock %}

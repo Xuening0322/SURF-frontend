@@ -1,0 +1,35 @@
+{% extends "public/templates/public_template.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recorder-style.css') }}">
+{% endblock %}
+
+{% block title %}Record{% endblock %}
+
+{% block main %}
+<div class="container">
+  <h1>Recorder</h1>
+  <hr>
+  <!-- Control buttons -->
+  <div id="controls">
+    <button id="recordButton">Record</button>
+    <button id="pauseButton" disabled>Pause</button>
+    <button id="stopButton" disabled>Stop</button>
+  </div>
+  <div id="formats">Format: start recording to see sample rate</div>
+  <p><strong>Recordings:</strong></p>
+  <!-- Recording list -->
+  <ol id="recordingsList"></ol>
+  <hr>
+
+</div>
+<br></br>
+
+{% endblock %}
+
+
+{% block script %}
+  <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+  <script src="{{ url_for('static', filename='js/recorder.js') }}">  </script>
+  <script src="{{ url_for('static', filename='js/recorder-app.js') }}">  </script>
+{% endblock %}
