@@ -1,6 +1,6 @@
 # SURF-frontend
 
-Make sure to edit the config.py!!
+Make sure to edit the [configuration file](config.py)!!
 
 
 ### Run all the following in sequence:
