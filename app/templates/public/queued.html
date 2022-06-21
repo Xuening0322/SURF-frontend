@@ -1,0 +1,21 @@
+{% extends "public/templates/public_template.html" %} {% block title %}Queued{% endblock %} {% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% if q_len == 0 %}
+            <h1>Currently proccesing your audio!</h1>
+            {% elif q_len == 1 %}
+            <h1>Queueing, waiting for {{q_len}} task ahead!</h1>
+            {% else %}
+            <h1>Queueing, waiting for {{q_len}} task(s) ahead!</h1>
+            {% endif %}
+            <hr>
+            <a href='/display/{{file_name}}'>
+                <h2>Refresh!</h2>
+            </a>
+        </div>
+    </div>
+</div>
+<br></br>
+
+{% endblock %}
