@@ -1,3 +1,4 @@
+from isort import file
 from app import app
 
 from flask import render_template, request, redirect, jsonify, make_response, url_for, flash, send_from_directory, send_file
@@ -12,6 +13,7 @@ from rq import Queue
 import shutil
 import time
 from zipfile import ZipFile
+from pydub import AudioSegment
 
 
 # redis with default connection (add password in production)
@@ -40,11 +42,11 @@ def display(file_name):
     # input_file = open(file_path, 'rb')
     
     # dummy process
-    processed_name = file_name + 'processed'
+    processed_name = file_name + '.mp3'
 
-    new_path = os.path.join(path, processed_name+'.wav')
+    new_path = os.path.join(path, processed_name)
     if os.path.exists(new_path):
-        return render_template('public/display.html', file_name=processed_name)
+        return render_template('public/display.html', file_name=file_name)
     else:
         return render_template('public/queued.html', q_len=len(q), file_name=file_name)
 
@@ -110,16 +112,14 @@ def process_wav(file_name):
     # input_file = open(file_path, 'rb')
     
     # dummy process
-    processed_name = ''.join(file_name.split('.')[:-1]) + 'processed'
-    new_path = os.path.join(path, processed_name+'.wav')
-    # output_file = open(new_path, 'wb')
-    # dummy process, copy and rename
+    # wav to mp3
+    wav_to_mp3(file_name)
+    # make fake midi
+    midi_name = ''.join(file_name.split('.')[:-1]) + '.midi'
+    midi_path = os.path.join(path, midi_name)
+    shutil.copyfile(os.path.join(path, 'test.midi'), midi_path)
 
-    print('sleeping for 1 min')
-    time.sleep(60) # sleep for 1 min
-    shutil.copyfile(file_path, new_path)
-    
-    return processed_name
+    return file_name
    
 
 
@@ -150,3 +150,18 @@ def download_midi_and_mp3(filename):
         return send_file(zip_path, as_attachment=True)
     except:
         return '<h1>Failed to download</h1>'
+
+
+
+def wav_to_mp3(file_name):
+    path = app.config['UPLOADS']
+    wav_path = os.path.join(path, file_name)
+
+    mp3_name = ''.join(file_name.split('.')[:-1]) + '.mp3'
+    mp3_path = os.path.join(path, mp3_name)
+    # print('sleeping for 1 min')
+    # time.sleep(60) # sleep for 1 min
+    # shutil.copyfile(file_path, new_path)
+    print('exporting', file_name)
+    AudioSegment.from_wav(wav_path).export(mp3_path, format="mp3")
+    print('exported', file_name)

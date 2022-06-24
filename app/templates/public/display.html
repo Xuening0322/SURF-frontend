@@ -1,5 +1,5 @@
 {% extends "public/templates/public_template.html" %} {% block title %}Display{% endblock %} {% block main %}
-<meta id="wav-path" data-name="wav-path" data-other="{{ url_for('static', filename='uploads/'+file_name+'.wav') }}">
+<meta id="wav-path" data-name="wav-path" data-other="{{ url_for('static', filename='uploads/'+file_name+'.mp3') }}">
 
 
 <div class="container">
@@ -7,7 +7,7 @@
         <div class="col">
             <h1>Display</h1>
             <hr>
-            <p><em>{{file_name}}.wav</em></p>
+            <p><em>{{file_name}}.mp3</em></p>
         </div>
     </div>
 </div>
@@ -25,8 +25,11 @@
     <!-- Controls -->
     <div class="controls">
         <button class="btn btn-primary" data-action="play" onclick="wavesurfer.playPause()">
-      <i class="glyphicon glyphicon-play"></i>Play/<i class="glyphicon glyphicon-pause"></i>Pause
-    </button>
+            <i class="glyphicon glyphicon-play"></i>Play/<i class="glyphicon glyphicon-pause"></i>Pause
+        </button>
+        <button class="btn btn-primary" onclick="window.location.href='/download_zip/{{file_name}}'">
+            Download
+        </button>
     </div>
 </div>
 
