@@ -1,4 +1,3 @@
-from isort import file
 from app import app
 
 from flask import render_template, request, redirect, jsonify, make_response, url_for, flash, send_from_directory, send_file
@@ -11,7 +10,6 @@ import os
 import redis
 from rq import Queue
 import shutil
-import time
 from zipfile import ZipFile
 from pydub import AudioSegment
 
@@ -159,9 +157,6 @@ def wav_to_mp3(file_name):
 
     mp3_name = ''.join(file_name.split('.')[:-1]) + '.mp3'
     mp3_path = os.path.join(path, mp3_name)
-    # print('sleeping for 1 min')
-    # time.sleep(60) # sleep for 1 min
-    # shutil.copyfile(file_path, new_path)
     print('exporting', file_name)
     AudioSegment.from_wav(wav_path).export(mp3_path, format="mp3")
-    print('exported', file_name)
+    print('exported', mp3_name)
