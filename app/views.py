@@ -1,6 +1,6 @@
 from app import app
 
-from flask import render_template, request, redirect, jsonify, make_response, url_for, flash, send_from_directory
+from flask import render_template, request, redirect, jsonify, make_response, url_for, flash, send_from_directory, send_file
 
 
 from datetime import datetime
@@ -11,6 +11,8 @@ import redis
 from rq import Queue
 import shutil
 import time
+from zipfile import ZipFile
+
 
 # redis with default connection (add password in production)
 r = redis.Redis()
@@ -113,11 +115,9 @@ def process_wav(file_name):
     # output_file = open(new_path, 'wb')
     # dummy process, copy and rename
 
-
-
-    shutil.copyfile(file_path, new_path)
     print('sleeping for 1 min')
     time.sleep(60) # sleep for 1 min
+    shutil.copyfile(file_path, new_path)
     
     return processed_name
    
@@ -132,3 +132,21 @@ def report_success(job, connection, result, *args, **kwargs):
 def report_failure(job, connection, type, value, traceback):
     print('faliure', job, connection, type, value, traceback)
     
+
+# download midi & mp3
+@app.route('/download_zip/<filename>')
+def download_midi_and_mp3(filename):
+    path = app.config['UPLOADS']
+    midi_path = os.path.join(path, filename+'.midi')
+    mp3_path = os.path.join(path, filename+'.mp3')
+    zip_path = os.path.join(path, filename+'.zip')
+    try:
+        # create zip file
+        with ZipFile(zip_path,'w') as zip_output:
+            zip_output.write(midi_path, arcname=filename+'.midi')
+            zip_output.write(mp3_path, arcname=filename+'.mp3')
+            print(zip_output.filelist)
+        # send
+        return send_file(zip_path, as_attachment=True)
+    except:
+        return '<h1>Failed to download</h1>'

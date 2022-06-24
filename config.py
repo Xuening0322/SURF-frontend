@@ -3,7 +3,7 @@ class Config(object):
     TESTING = False
 
     # need to override this for production
-    UPLOADS = '/Users/spoa/Desktop/surf_project/app/static/uploads'
+    UPLOADS = '/Users/spoa/Documents/SURF-frontend/app/static/uploads'
     SESSION_COOKIE_SECURE = True
     # override this dummy secret key
     SECRET_KEY = '123456'
@@ -14,7 +14,7 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     # need to override this for production
-    UPLOADS = '/Users/spoa/Desktop/surf_project/app/static/uploads'
+    UPLOADS = '/Users/spoa/Documents/SURF-frontend/app/static/uploads'
     SESSION_COOKIE_SECURE = False
 
 class TestingConfig(Config):
