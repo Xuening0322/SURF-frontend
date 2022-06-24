@@ -150,6 +150,28 @@ def download_midi_and_mp3(filename):
         return '<h1>Failed to download</h1>'
 
 
+# download midi
+@app.route('/download_midi/<filename>')
+def download_midi(filename):
+    path = app.config['UPLOADS']
+    midi_path = os.path.join(path, filename+'.midi')
+    try:
+        return send_file(midi_path, as_attachment=True)
+    except:
+        return '<h1>Failed to download</h1>'
+
+
+# download mp3
+@app.route('/download_mp3/<filename>')
+def download_mp3(filename):
+    path = app.config['UPLOADS']
+    mp3_path = os.path.join(path, filename+'.mp3')
+    try:
+        return send_file(mp3_path, as_attachment=True)
+    except:
+        return '<h1>Failed to download</h1>'
+
+
 
 def wav_to_mp3(file_name):
     path = app.config['UPLOADS']

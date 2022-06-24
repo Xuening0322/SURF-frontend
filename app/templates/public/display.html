@@ -27,8 +27,14 @@
         <button class="btn btn-primary" data-action="play" onclick="wavesurfer.playPause()">
             <i class="glyphicon glyphicon-play"></i>Play/<i class="glyphicon glyphicon-pause"></i>Pause
         </button>
+        <button class="btn btn-primary" onclick="window.location.href='/download_midi/{{file_name}}'">
+            Download(MIDI)
+        </button>
+        <button class="btn btn-primary" onclick="window.location.href='/download_mp3/{{file_name}}'">
+            Download(mp3)
+        </button>
         <button class="btn btn-primary" onclick="window.location.href='/download_zip/{{file_name}}'">
-            Download
+            Download(MIDI&MP3)
         </button>
     </div>
 </div>
