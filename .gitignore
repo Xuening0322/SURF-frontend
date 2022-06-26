@@ -1,0 +1,29 @@
+### Python ###
+# Byte-compiled / optimized / DLL files
+app/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# upload audios
+*.mp3
+*.midi
+*.wav
+*.zip
+app/static/uploads/
+
+# mac stuff
+.DS_Store
+
+# redis dump
+*.rdb
