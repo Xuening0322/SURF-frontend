@@ -8,4 +8,4 @@ Make sure to edit the [configuration file](config.py)!!
 
 `rq worker`
 
-`flask run`
+`flask run` or `python3 run.py` on server
