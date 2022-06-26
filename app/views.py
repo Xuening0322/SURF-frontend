@@ -63,7 +63,6 @@ def record_recieve():
             filename = timestamp+'.wav'
   
         
-        # TODO: downsample wav to 8k Hz
         path = app.config['UPLOADS']
         file.save(os.path.join(path, filename))
         print(file)
@@ -71,7 +70,64 @@ def record_recieve():
         print('Upload Success!')
         print('saved', filename)
 
-        # TODO: implement queing to call model 
+        job = q.enqueue(process_wav, filename, on_success=report_success, on_failure=report_failure)
+
+        return make_response(jsonify({'message':'Upload Success!', 'path_url': '/static/uploads/'+filename, 'timestamp': timestamp}), 200)
+
+
+allowed_audio_extensions = ['mpeg', 'wav']
+def isAudio(mimetype):
+    if not '/' in mimetype:
+        return False
+    ext = mimetype.rsplit('/', 1)[1]
+    return ext.lower() in allowed_audio_extensions
+
+def isMP3(mimetype):
+    if not '/' in mimetype:
+        return False
+    ext = mimetype.rsplit('/', 1)[1]
+    return ext.lower() == 'mpeg'
+
+# record's recieve post method
+@app.route('/record/recieve_upload', methods=['POST'])
+def record_recieve_upload():
+    # upload via web front-end
+    if request.files:
+        file = request.files['file']
+        if file.filename == '':
+            print('ERROR: Audio must have a filename')
+            return make_response(jsonify({'message':'Audio must have a filename'}), 400)
+
+        else:
+            timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
+            filename = timestamp+'.wav'
+  
+        # if file not audio make an error response
+        if not isAudio(file.mimetype):
+            print('ERROR: Uploaded audio must be a mp3 or wav')
+            return make_response(jsonify({'message':'Uplaoded audio must be a mp3 or wav'}), 400)
+        
+        path = app.config['UPLOADS']
+        upload_path = os.path.join(path, file.filename)
+        file.save(upload_path)
+        print(file)
+
+        export_path = os.path.join(path, filename)
+
+        # load audio and resize to 5~10 seconds
+        if isMP3(file.mimetype):
+            audio = AudioSegment.from_mp3(upload_path)
+        else:
+            audio = AudioSegment.from_wav(upload_path)
+        if len(audio) < 5000:
+            print('ERROR: audio less than 5 seconds long')
+            return make_response(jsonify({'message':'audio less than 5 seconds long'}), 400)
+        else:
+            audio[:10000].export(export_path, format='wav')
+
+        print('Upload Success!')
+        print('saved', filename)
+
         job = q.enqueue(process_wav, filename, on_success=report_success, on_failure=report_failure)
 
         return make_response(jsonify({'message':'Upload Success!', 'path_url': '/static/uploads/'+filename, 'timestamp': timestamp}), 200)
@@ -182,3 +238,21 @@ def wav_to_mp3(file_name):
     print('exporting', file_name)
     AudioSegment.from_wav(wav_path).export(mp3_path, format="mp3")
     print('exported', mp3_name)
+
+
+def mp3_to_wav(file_name):
+    path = app.config['UPLOADS']
+    mp3_path = os.path.join(path, file_name)
+
+    wav_name = ''.join(file_name.split('.')[:-1]) + '.wav'
+    wav_path = os.path.join(path, wav_name)
+    print('exporting', file_name)
+    AudioSegment.from_wav(mp3_path).export(wav_path, format="mp3")
+    print('exported', wav_name)
+
+
+
+
+
+    
+    
