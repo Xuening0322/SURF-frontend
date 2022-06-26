@@ -132,6 +132,7 @@ function pauseRecording() {
 }
 
 function stopRecording() {
+    timer.pause();
     timer = null;
     console.log("stopButton clicked");
 

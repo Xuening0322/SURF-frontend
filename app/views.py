@@ -34,6 +34,8 @@ def record():
 # recorded audio waveform display page
 @app.route('/display/<file_name>')
 def display(file_name):
+    if file_name == 'undefined':
+        return render_template('public/record.html')
     path = app.config['UPLOADS']
     file_path = os.path.join(path, file_name)
 
