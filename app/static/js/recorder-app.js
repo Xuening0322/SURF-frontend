@@ -18,6 +18,36 @@ recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
 pauseButton.addEventListener("click", pauseRecording);
 
+
+// timer dispatch function
+function startTimer(seconds, container, oncomplete) {
+    var startTime, timer, obj, ms = seconds * 1000,
+        display = document.getElementById(container);
+    obj = {};
+    obj.resume = function() {
+        startTime = new Date().getTime();
+        timer = setInterval(obj.step, 250); // adjust this number to affect granularity
+        // lower numbers are more accurate, but more CPU-expensive
+    };
+    obj.pause = function() {
+        ms = obj.step();
+        clearInterval(timer);
+    };
+    obj.step = function() {
+        var now = Math.max(0, ms - (new Date().getTime() - startTime));
+        display.innerHTML = parseInt((10000 - now) / 1000) + 's';
+        if (now == 0) {
+            clearInterval(timer);
+            obj.resume = function() {};
+            if (oncomplete) oncomplete();
+        }
+        return now;
+    };
+    obj.resume();
+    return obj;
+}
+var timer;
+
 function startRecording() {
     console.log("recordButton clicked");
 
@@ -33,8 +63,12 @@ function startRecording() {
 	*/
 
     recordButton.disabled = true;
-    stopButton.disabled = false;
-    pauseButton.disabled = false
+    // allow stop and pause button only after 5 seconds of recording
+    window.setTimeout(() => {
+        stopButton.disabled = false;
+        pauseButton.disabled = false;
+    }, 5000);
+
 
     /*
     	We're using the standard promise based getUserMedia() 
@@ -46,9 +80,9 @@ function startRecording() {
 
         /*
         	create an audio context after getUserMedia is called
-        	sample rate is hardcoded to 8k
+        	sample rate is hardcoded to 44.1k
         */
-        audioContext = new AudioContext({ sampleRate: 8000 });
+        audioContext = new AudioContext({ sampleRate: 441000 });
 
         //update the format 
         document.getElementById("formats").innerHTML = "Format: 1 channel pcm @ " + audioContext.sampleRate / 1000 + "kHz"
@@ -76,6 +110,9 @@ function startRecording() {
         stopButton.disabled = true;
         pauseButton.disabled = true
     });
+
+    // automatically trigger stop recording when time is up!
+    timer = startTimer(10, "timerLabel", stopRecording);
 }
 
 function pauseRecording() {
@@ -83,16 +120,19 @@ function pauseRecording() {
     if (rec.recording) {
         //pause
         rec.stop();
+        timer.pause();
         pauseButton.innerHTML = "Resume";
     } else {
         //resume
         rec.record()
+        timer.resume();
         pauseButton.innerHTML = "Pause";
 
     }
 }
 
 function stopRecording() {
+    timer = null;
     console.log("stopButton clicked");
 
     //disable the stop button, enable the record too allow for new recordings
