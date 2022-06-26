@@ -55,8 +55,8 @@ def record_recieve():
     if request.files:
         file = request.files['file']
         if file.filename == '':
-            print('ERROR: Image must have a filename')
-            return make_response(jsonify({'message':'Image must have a filename'}), 400)
+            print('ERROR: Audio must have a filename')
+            return make_response(jsonify({'message':'Audio must have a filename'}), 400)
 
         else:
             timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -123,6 +123,7 @@ def record_recieve_upload():
             print('ERROR: audio less than 5 seconds long')
             return make_response(jsonify({'message':'audio less than 5 seconds long'}), 400)
         else:
+            audio.set_frame_rate(41000) # explicitly set sample rate to 44.1kHz
             audio[:10000].export(export_path, format='wav')
 
         print('Upload Success!')
