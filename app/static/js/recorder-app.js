@@ -33,6 +33,9 @@ function startTimer(seconds, container, oncomplete) {
         ms = obj.step();
         clearInterval(timer);
     };
+    obj.end = function() {
+        clearInterval(timer);
+    };
     obj.step = function() {
         var now = Math.max(0, ms - (new Date().getTime() - startTime));
         display.innerHTML = parseInt((10000 - now) / 1000) + 's';
@@ -132,7 +135,7 @@ function pauseRecording() {
 }
 
 function stopRecording() {
-    timer.pause();
+    timer.end()
     timer = null;
     console.log("stopButton clicked");
 
