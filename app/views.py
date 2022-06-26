@@ -172,9 +172,9 @@ def process_wav(file_name):
     # wav to mp3
     wav_to_mp3(file_name)
     # make fake midi
-    midi_name = ''.join(file_name.split('.')[:-1]) + '.midi'
+    midi_name = ''.join(file_name.split('.')[:-1]) + '.mid'
     midi_path = os.path.join(path, midi_name)
-    shutil.copyfile(os.path.join(path, 'test.midi'), midi_path)
+    shutil.copyfile(os.path.join(path, 'test.mid'), midi_path)
 
     return file_name
    
@@ -194,13 +194,13 @@ def report_failure(job, connection, type, value, traceback):
 @app.route('/download_zip/<filename>')
 def download_midi_and_mp3(filename):
     path = app.config['UPLOADS']
-    midi_path = os.path.join(path, filename+'.midi')
+    midi_path = os.path.join(path, filename+'.mid')
     mp3_path = os.path.join(path, filename+'.mp3')
     zip_path = os.path.join(path, filename+'.zip')
     try:
         # create zip file
         with ZipFile(zip_path,'w') as zip_output:
-            zip_output.write(midi_path, arcname=filename+'.midi')
+            zip_output.write(midi_path, arcname=filename+'.mid')
             zip_output.write(mp3_path, arcname=filename+'.mp3')
             print(zip_output.filelist)
         # send
@@ -213,7 +213,7 @@ def download_midi_and_mp3(filename):
 @app.route('/download_midi/<filename>')
 def download_midi(filename):
     path = app.config['UPLOADS']
-    midi_path = os.path.join(path, filename+'.midi')
+    midi_path = os.path.join(path, filename+'.mid')
     try:
         return send_file(midi_path, as_attachment=True)
     except:
