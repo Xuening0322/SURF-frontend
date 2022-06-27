@@ -28,7 +28,7 @@
     </div>
     </form>
 
-    <button onclick="createDownloadLinkForUpload(document.getElementById('inputFile').files[0])" class="btn btn-primary">Submit</button>
+    <button onclick="createDownloadLink(document.getElementById('inputFile').files[0])" class="btn btn-primary">Submit</button>
 
 
 
@@ -66,76 +66,6 @@
     function filesize(elem) {
         console.log(elem.files[0].size)
         document.cookie = 'filesize=' + elem.files[0].size
-    }
-
-    function createDownloadLinkForUpload(blob) {
-
-        var url = URL.createObjectURL(blob);
-        var au = document.createElement('audio');
-        var li = document.createElement('li');
-        var link = document.createElement('a');
-
-        //name of .wav file to use during upload and download (without extendion)
-        var filename = new Date().toISOString();
-
-        //add controls to the <audio> element
-        au.controls = true;
-        au.src = url;
-
-        //save to disk link
-        link.href = url;
-        link.download = filename + ".wav"; //download forces the browser to donwload the file using the  filename
-        link.innerHTML = "Save to disk";
-
-        //add the new audio element to li
-        li.appendChild(au);
-
-        //add the filename to the li
-        li.appendChild(document.createTextNode(filename + ".wav "))
-
-        //add the save to disk link to li
-        li.appendChild(link);
-
-        //upload link
-        var upload = document.createElement('a');
-        upload.href = "#";
-        upload.innerHTML = "Upload";
-        upload.addEventListener("click", function(event) {
-            const audioUrl = URL.createObjectURL(blob);
-            const audio = new Audio(audioUrl);
-
-            var data = new FormData();
-            data.append('file', blob, 'file');
-            fetch(window.origin + '/record/recieve_upload', {
-                    method: "POST",
-                    credentials: "include",
-                    body: data,
-                    cache: "no-cache"
-                })
-                .then(response => response.json())
-                .then(json => {
-                    console.log(json);
-                    console.log(json['message']);
-                    // this redirects user to display page
-                    window.location.replace(window.origin + "/display/" + json['timestamp']);
-
-                });
-        })
-        li.appendChild(document.createTextNode(" ")); //add a space in between
-        li.appendChild(upload); //add the upload link to li
-
-        // delete button
-        var deleteButton = document.createElement('a')
-        deleteButton.href = "#";
-        deleteButton.innerHTML = " Delete";
-        // removes current li from the recordingList
-        deleteButton.addEventListener("click", function(event) {
-            recordingsList.removeChild(li);
-        });
-        li.appendChild(deleteButton);
-
-        //add the li element to the ol
-        recordingsList.appendChild(li);
     }
 </script>
 {% endblock %}

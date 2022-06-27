@@ -85,7 +85,9 @@ function startRecording() {
         	create an audio context after getUserMedia is called
         	sample rate is hardcoded to 44.1k
         */
-        audioContext = new AudioContext({ sampleRate: 441000 });
+        // audioContext = new AudioContext({ sampleRate: 441000 });
+        audioContext = new AudioContext();
+
 
         //update the format 
         document.getElementById("formats").innerHTML = "Format: 1 channel pcm @ " + audioContext.sampleRate / 1000 + "kHz"
@@ -195,7 +197,7 @@ function createDownloadLink(blob) {
 
         var data = new FormData();
         data.append('file', blob, 'file');
-        fetch(window.origin + '/record/recieve', {
+        fetch(window.origin + '/record/recieve_upload', {
                 method: "POST",
                 credentials: "include",
                 body: data,

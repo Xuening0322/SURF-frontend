@@ -50,34 +50,8 @@ def display(file_name):
     else:
         return render_template('public/queued.html', q_len=len(q), file_name=file_name)
 
-# record's recieve post method
-@app.route('/record/recieve', methods=['POST'])
-def record_recieve():
-    # upload via web front-end
-    if request.files:
-        file = request.files['file']
-        if file.filename == '':
-            print('ERROR: Audio must have a filename')
-            return make_response(jsonify({'message':'Audio must have a filename'}), 400)
 
-        else:
-            timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
-            filename = timestamp+'.wav'
-  
-        
-        path = app.config['UPLOADS']
-        file.save(os.path.join(path, filename))
-        print(file)
-
-        print('Upload Success!')
-        print('saved', filename)
-
-        job = q.enqueue(process_wav, filename, on_success=report_success, on_failure=report_failure)
-
-        return make_response(jsonify({'message':'Upload Success!', 'path_url': '/static/uploads/'+filename, 'timestamp': timestamp}), 200)
-
-
-allowed_audio_extensions = ['mpeg', 'wav']
+allowed_audio_extensions = ['mpeg', 'wav', 'x-wav']
 def isAudio(mimetype):
     if not '/' in mimetype:
         return False
@@ -106,7 +80,7 @@ def record_recieve_upload():
   
         # if file not audio make an error response
         if not isAudio(file.mimetype):
-            print('ERROR: Uploaded audio must be a mp3 or wav')
+            print('ERROR: Uploaded audio must be a mp3 or wav but get', file.mimetype)
             return make_response(jsonify({'message':'Uplaoded audio must be a mp3 or wav'}), 400)
         
         path = app.config['UPLOADS']
