@@ -58,26 +58,12 @@ function startRecording() {
     	Simple constraints object, for more advanced audio features see
     	https://addpipe.com/blog/audio-constraints-getusermedia/
     */
-
     var constraints = { audio: true, video: false }
-
-    /*
-    	Disable the record button until we get a success or fail from getUserMedia() 
-	*/
-
-    recordButton.disabled = true;
-    // allow stop and pause button only after 5 seconds of recording
-    window.setTimeout(() => {
-        stopButton.disabled = false;
-        pauseButton.disabled = false;
-    }, 5000);
-
 
     /*
     	We're using the standard promise based getUserMedia() 
     	https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
 	*/
-
     navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
 
@@ -109,15 +95,29 @@ function startRecording() {
 
         console.log("Recording started");
 
+
+        /*
+            Disable the record button until we get a success or fail from getUserMedia() 
+        */
+
+        recordButton.disabled = true;
+        // allow stop and pause button only after 5 seconds of recording
+        window.setTimeout(() => {
+            stopButton.disabled = false;
+            pauseButton.disabled = false;
+        }, 5000);
+
+
+        // automatically trigger stop recording when time is up!
+        timer = startTimer(10, "timerLabel", stopRecording);
+
     }).catch(function(err) {
         //enable the record button if getUserMedia() fails
         recordButton.disabled = false;
         stopButton.disabled = true;
         pauseButton.disabled = true
+        timer = null;
     });
-
-    // automatically trigger stop recording when time is up!
-    timer = startTimer(10, "timerLabel", stopRecording);
 }
 
 function pauseRecording() {
