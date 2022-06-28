@@ -99,7 +99,7 @@ def record_recieve_upload():
             print('ERROR: audio less than 5 seconds long')
             return make_response(jsonify({'message':'audio less than 5 seconds long'}), 400)
         else:
-            audio.set_frame_rate(441000) # explicitly set sample rate to 44.1kHz
+            audio.set_frame_rate(44100) # explicitly set sample rate to 44.1kHz
             audio[:10000].export(export_path, format='wav')
 
         print('Upload Success!')
